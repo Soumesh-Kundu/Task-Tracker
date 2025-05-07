@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Users{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255) 
+  email String @db.VarChar(255) @unique 
+  image String?
+
+  //relations
+  tasks Tasks[]
+  taskLogs TaskLog[]
+}
+
+model Tasks{
+  id Int @id @default(autoincrement())
+  title String @db.VarChar(255) 
+  description String? @db.Text
+  completed Boolean @default(false)
+  userId Int
+  status TaskStatus @default(PENDING)
+
+  //relations
+  user Users @relation(fields: [userId], references: [id],onDelete: Cascade)
+  taskLogs TaskLog[]
+}
+
+model TaskLog{
+  id Int @id @default(autoincrement())
+  taskId Int
+  userId Int
+  duration BigInt 
+  createdAt DateTime @default(now())
+
+  // relations
+  task Tasks @relation(fields: [taskId], references: [id],onDelete: Cascade)
+  user Users @relation(fields: [userId], references: [id],onDelete: Cascade)
+}
