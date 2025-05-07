@@ -2284,7 +2284,6 @@ export namespace Prisma {
     id: number | null
     title: string | null
     description: string | null
-    completed: boolean | null
     userId: number | null
     status: $Enums.TaskStatus | null
   }
@@ -2293,7 +2292,6 @@ export namespace Prisma {
     id: number | null
     title: string | null
     description: string | null
-    completed: boolean | null
     userId: number | null
     status: $Enums.TaskStatus | null
   }
@@ -2302,7 +2300,6 @@ export namespace Prisma {
     id: number
     title: number
     description: number
-    completed: number
     userId: number
     status: number
     _all: number
@@ -2323,7 +2320,6 @@ export namespace Prisma {
     id?: true
     title?: true
     description?: true
-    completed?: true
     userId?: true
     status?: true
   }
@@ -2332,7 +2328,6 @@ export namespace Prisma {
     id?: true
     title?: true
     description?: true
-    completed?: true
     userId?: true
     status?: true
   }
@@ -2341,7 +2336,6 @@ export namespace Prisma {
     id?: true
     title?: true
     description?: true
-    completed?: true
     userId?: true
     status?: true
     _all?: true
@@ -2437,7 +2431,6 @@ export namespace Prisma {
     id: number
     title: string
     description: string | null
-    completed: boolean
     userId: number
     status: $Enums.TaskStatus
     _count: TasksCountAggregateOutputType | null
@@ -2465,7 +2458,6 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
-    completed?: boolean
     userId?: boolean
     status?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2477,7 +2469,6 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
-    completed?: boolean
     userId?: boolean
     status?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2487,7 +2478,6 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
-    completed?: boolean
     userId?: boolean
     status?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2497,12 +2487,11 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
-    completed?: boolean
     userId?: boolean
     status?: boolean
   }
 
-  export type TasksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "completed" | "userId" | "status", ExtArgs["result"]["tasks"]>
+  export type TasksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "userId" | "status", ExtArgs["result"]["tasks"]>
   export type TasksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     taskLogs?: boolean | Tasks$taskLogsArgs<ExtArgs>
@@ -2525,7 +2514,6 @@ export namespace Prisma {
       id: number
       title: string
       description: string | null
-      completed: boolean
       userId: number
       status: $Enums.TaskStatus
     }, ExtArgs["result"]["tasks"]>
@@ -2956,7 +2944,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Tasks", 'Int'>
     readonly title: FieldRef<"Tasks", 'String'>
     readonly description: FieldRef<"Tasks", 'String'>
-    readonly completed: FieldRef<"Tasks", 'Boolean'>
     readonly userId: FieldRef<"Tasks", 'Int'>
     readonly status: FieldRef<"Tasks", 'TaskStatus'>
   }
@@ -4537,7 +4524,6 @@ export namespace Prisma {
     id: 'id',
     title: 'title',
     description: 'description',
-    completed: 'completed',
     userId: 'userId',
     status: 'status'
   };
@@ -4610,13 +4596,6 @@ export namespace Prisma {
    * Reference to a field of type 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4741,7 +4720,6 @@ export namespace Prisma {
     id?: IntFilter<"Tasks"> | number
     title?: StringFilter<"Tasks"> | string
     description?: StringNullableFilter<"Tasks"> | string | null
-    completed?: BoolFilter<"Tasks"> | boolean
     userId?: IntFilter<"Tasks"> | number
     status?: EnumTaskStatusFilter<"Tasks"> | $Enums.TaskStatus
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4752,7 +4730,6 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    completed?: SortOrder
     userId?: SortOrder
     status?: SortOrder
     user?: UsersOrderByWithRelationInput
@@ -4766,7 +4743,6 @@ export namespace Prisma {
     NOT?: TasksWhereInput | TasksWhereInput[]
     title?: StringFilter<"Tasks"> | string
     description?: StringNullableFilter<"Tasks"> | string | null
-    completed?: BoolFilter<"Tasks"> | boolean
     userId?: IntFilter<"Tasks"> | number
     status?: EnumTaskStatusFilter<"Tasks"> | $Enums.TaskStatus
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4777,7 +4753,6 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    completed?: SortOrder
     userId?: SortOrder
     status?: SortOrder
     _count?: TasksCountOrderByAggregateInput
@@ -4794,7 +4769,6 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Tasks"> | number
     title?: StringWithAggregatesFilter<"Tasks"> | string
     description?: StringNullableWithAggregatesFilter<"Tasks"> | string | null
-    completed?: BoolWithAggregatesFilter<"Tasks"> | boolean
     userId?: IntWithAggregatesFilter<"Tasks"> | number
     status?: EnumTaskStatusWithAggregatesFilter<"Tasks"> | $Enums.TaskStatus
   }
@@ -4916,7 +4890,6 @@ export namespace Prisma {
   export type TasksCreateInput = {
     title: string
     description?: string | null
-    completed?: boolean
     status?: $Enums.TaskStatus
     user: UsersCreateNestedOneWithoutTasksInput
     taskLogs?: TaskLogCreateNestedManyWithoutTaskInput
@@ -4926,7 +4899,6 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
-    completed?: boolean
     userId: number
     status?: $Enums.TaskStatus
     taskLogs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
@@ -4935,7 +4907,6 @@ export namespace Prisma {
   export type TasksUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     user?: UsersUpdateOneRequiredWithoutTasksNestedInput
     taskLogs?: TaskLogUpdateManyWithoutTaskNestedInput
@@ -4945,7 +4916,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     userId?: IntFieldUpdateOperationsInput | number
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     taskLogs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
@@ -4955,7 +4925,6 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
-    completed?: boolean
     userId: number
     status?: $Enums.TaskStatus
   }
@@ -4963,7 +4932,6 @@ export namespace Prisma {
   export type TasksUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   }
 
@@ -4971,7 +4939,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     userId?: IntFieldUpdateOperationsInput | number
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   }
@@ -5174,11 +5141,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type EnumTaskStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TaskStatus | EnumTaskStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TaskStatus[] | ListEnumTaskStatusFieldRefInput<$PrismaModel>
@@ -5195,7 +5157,6 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    completed?: SortOrder
     userId?: SortOrder
     status?: SortOrder
   }
@@ -5209,7 +5170,6 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    completed?: SortOrder
     userId?: SortOrder
     status?: SortOrder
   }
@@ -5218,7 +5178,6 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    completed?: SortOrder
     userId?: SortOrder
     status?: SortOrder
   }
@@ -5226,14 +5185,6 @@ export namespace Prisma {
   export type TasksSumOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EnumTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -5461,10 +5412,6 @@ export namespace Prisma {
     connect?: TaskLogWhereUniqueInput | TaskLogWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type EnumTaskStatusFieldUpdateOperationsInput = {
     set?: $Enums.TaskStatus
   }
@@ -5656,24 +5603,11 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedEnumTaskStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TaskStatus | EnumTaskStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TaskStatus[] | ListEnumTaskStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.TaskStatus[] | ListEnumTaskStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumTaskStatusFilter<$PrismaModel> | $Enums.TaskStatus
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -5741,7 +5675,6 @@ export namespace Prisma {
   export type TasksCreateWithoutUserInput = {
     title: string
     description?: string | null
-    completed?: boolean
     status?: $Enums.TaskStatus
     taskLogs?: TaskLogCreateNestedManyWithoutTaskInput
   }
@@ -5750,7 +5683,6 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
-    completed?: boolean
     status?: $Enums.TaskStatus
     taskLogs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
   }
@@ -5811,7 +5743,6 @@ export namespace Prisma {
     id?: IntFilter<"Tasks"> | number
     title?: StringFilter<"Tasks"> | string
     description?: StringNullableFilter<"Tasks"> | string | null
-    completed?: BoolFilter<"Tasks"> | boolean
     userId?: IntFilter<"Tasks"> | number
     status?: EnumTaskStatusFilter<"Tasks"> | $Enums.TaskStatus
   }
@@ -5931,7 +5862,6 @@ export namespace Prisma {
   export type TasksCreateWithoutTaskLogsInput = {
     title: string
     description?: string | null
-    completed?: boolean
     status?: $Enums.TaskStatus
     user: UsersCreateNestedOneWithoutTasksInput
   }
@@ -5940,7 +5870,6 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
-    completed?: boolean
     userId: number
     status?: $Enums.TaskStatus
   }
@@ -5984,7 +5913,6 @@ export namespace Prisma {
   export type TasksUpdateWithoutTaskLogsInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     user?: UsersUpdateOneRequiredWithoutTasksNestedInput
   }
@@ -5993,7 +5921,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     userId?: IntFieldUpdateOperationsInput | number
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   }
@@ -6028,7 +5955,6 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
-    completed?: boolean
     status?: $Enums.TaskStatus
   }
 
@@ -6042,7 +5968,6 @@ export namespace Prisma {
   export type TasksUpdateWithoutUserInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     taskLogs?: TaskLogUpdateManyWithoutTaskNestedInput
   }
@@ -6051,7 +5976,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     taskLogs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
   }
@@ -6060,7 +5984,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    completed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   }
 

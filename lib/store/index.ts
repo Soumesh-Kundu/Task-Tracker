@@ -3,7 +3,7 @@ import { taskModalReducer } from './slice/taskModal';
 
 export const store= configureStore({
   reducer: {
-    crypto:taskModalReducer
+    taskModal:taskModalReducer
   },
 });
 

@@ -23,6 +23,9 @@ const modalSlice = createSlice({
     },
     setModalOpen: (state, action) => {
       state.isModalOpen = action.payload;
+      if(!action.payload) {
+        state.data = null;
+      }
     },
   },
 });
