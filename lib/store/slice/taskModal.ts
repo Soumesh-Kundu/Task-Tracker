@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+type TaskModalFieldData={
+  id: number;
+  title: string;
+  description: string | null;
+} |null;
 type TaskModalState = {
   isModalOpen: boolean;
-  data: any | null;
+  data: TaskModalFieldData
   loading: boolean;
 };
 
@@ -15,7 +20,7 @@ const modalSlice = createSlice({
   name: "taskModal",
   initialState: intitalState,
   reducers: {
-    setData: (state, action) => {
+    setData: (state, action:{payload:TaskModalFieldData}) => {
       state.data = action.payload;
     },
     setLoading: (state, action) => {

@@ -1,6 +1,6 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
-import { Dialog, DialogTitle, DialogContent } from "./ui/dialog";
+import { Dialog, DialogTitle, DialogContent } from "../ui/dialog";
 import { RootState } from "@/lib/store";
 import { setModalOpen } from "@/lib/store/slice/taskModal";
 import { z } from "zod";
@@ -13,23 +13,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { Button } from "./ui/button";
+} from "../ui/select";
+import { Button } from "../ui/button";
 import { useEffect } from "react";
+import { addTask, editTask } from "@/app/_actions";
 
 const formState = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string(),
-  status: z.enum(["PENDING", "INPROGRESS", "COMPLETED"]).nullable(),
 });
 
 export default function TaskModal() {
@@ -38,23 +38,37 @@ export default function TaskModal() {
   );
   const dispatch = useDispatch();
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof formState>>({
     resolver: zodResolver(formState),
     defaultValues: {
       title: data?.title || "",
       description: data?.description || "",
-      status: data?.status || null,
     },
   });
-  useEffect(()=>{
-    if (data) {
-      form.reset({
-        title: data?.title || "",
-        description: data?.description || "",
-        status: data?.status || null,
-      });
+  useEffect(() => {
+    form.reset({
+      title: data?.title || "",
+      description: data?.description || "",
+    });
+  }, [data]);
+
+  async function onSubmit(values: z.infer<typeof formState>) {
+    const { title, description } = values;
+    try {
+      const taskData = { title, description };
+      let res;
+      if (!data?.id) {
+        res = await addTask(taskData);
+      } else {
+        const taskData = { title, description };
+        res = await editTask({ id: data.id, updates: taskData });
+      }
+      form.reset();
+      dispatch(setModalOpen(false));
+    } catch (error) {
+      console.log(error);
     }
-  },[data])
+  }
   return (
     <Dialog
       open={isModalOpen}
@@ -66,12 +80,10 @@ export default function TaskModal() {
       }}
     >
       <DialogContent>
-        <DialogTitle>Add Task</DialogTitle>
+        <DialogTitle>{data?.id ? "Edit" : "Add"} Task</DialogTitle>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((data) => {
-              console.log(data);
-            })}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-2 mt-2"
           >
             <FormField
@@ -100,38 +112,9 @@ export default function TaskModal() {
                 </FormItem>
               )}
             />
-            {data?.status && (
-              <FormField
-                name="status"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Select a status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="PENDING">Pending</SelectItem>
-                          <SelectItem value="INPROGRESS">
-                            In Progress
-                          </SelectItem>
-                          <SelectItem value="COMPLETED">Completed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
             <div className="w-full mx-auto h-px bg-gray-200 my-2"></div>
             <div className="flex justify-end gap-2">
-              <Button>Add</Button>
+              <Button>{data?.id ? "Save" : "Add"}</Button>
               <Button
                 type="button"
                 variant="outline"
