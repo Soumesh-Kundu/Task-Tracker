@@ -1,211 +1,7 @@
 "use server";
-
-import { askAI } from "@/lib/ai";
 import { getServerUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Prisma, TaskStatus } from "@/lib/generated/prisma";
-import { revalidatePath } from "next/cache";
-
-export async function addTask({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  try {
-    const user = await getServerUser();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    await db.tasks.create({
-      data: {
-        title,
-        description,
-        status: TaskStatus.PENDING,
-        user: {
-          connect: {
-            id: parseInt(user.user.id),
-          },
-        },
-      },
-    });
-    revalidatePath("/");
-    return { message: "Task created successfully", status: true };
-  } catch (error) {
-    console.log(error);
-    return { error: "Something went wrong", status: false };
-  }
-}
-
-export async function editTask({
-  id,
-  updates,
-}: {
-  id: number;
-  updates: {
-    title: string;
-    description: string;
-  };
-}) {
-  try {
-    const user = await getServerUser();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    await db.tasks.update({
-      where: {
-        id,
-      },
-      data: updates,
-    });
-    revalidatePath("/", "page");
-    return { message: "Task updated successfully", status: true };
-  } catch (error) {
-    console.log(error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return { error: "Task not found", status: false };
-    }
-    return { error: "Something went wrong", status: false };
-  }
-}
-export async function updateTaskStatus({
-  id,
-  status,
-}: {
-  id: number;
-  status: TaskStatus;
-}) {
-  try {
-    const user = await getServerUser();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    const res = await db.tasks.update({
-      where: {
-        id,
-        userId: parseInt(user.user.id),
-      },
-      data: {
-        status,
-      },
-    });
-    revalidatePath("/", "page");
-    return { message: "Task updated successfully", status: true };
-  } catch (error) {
-    console.log(error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return { error: "Task not found", status: false };
-    }
-    return { error: "Something went wrong", status: false };
-  }
-}
-
-export async function deleteTask(id: number) {
-  try {
-    const user = await getServerUser();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    await db.tasks.delete({
-      where: {
-        id,
-      },
-    });
-    revalidatePath("/", "page");
-    return { message: "Task deleted successfully", status: true };
-  } catch (error) {
-    console.log(error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return { error: "Task not found", status: false };
-    }
-    return { error: "Something went wrong", status: false };
-  }
-}
-export async function upsertActivityLog(
-  taskId: number,
-  activityId: number,
-  duration: number = 0
-) {
-  try {
-    const user = await getServerUser();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    const activity = await db.taskLog.upsert({
-      where: {
-        taskId,
-        id: activityId,
-        userId: parseInt(user.user.id),
-      },
-      update: {
-        duration,
-      },
-      create: {
-        duration,
-        task: {
-          connect: {
-            id: taskId,
-          },
-        },
-        user: {
-          connect: {
-            id: parseInt(user.user.id),
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-    return { activityId: activity.id, status: true };
-  } catch (error) {
-    console.log(error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return { error: "Task not found", status: false };
-    }
-    return { error: "Something went wrong", status: false };
-  }
-}
-
-export async function deleteActivityLog(taskId: number, activityId: number) {
-  try {
-    const user = await getServerUser();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    await db.taskLog.delete({
-      where: {
-        id: activityId,
-        taskId,
-        userId: parseInt(user.user.id),
-      },
-    });
-    revalidatePath("/dashboard/[id]", "page");
-    return { message: "Activity log deleted successfully", status: true };
-  } catch (error) {
-    console.log(error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return { error: "Task not found", status: false };
-    }
-    return { error: "Something went wrong", status: false };
-  }
-}
+import { TaskStatus } from "@/lib/generated/prisma";
 
 export async function getAllTasks() {
   try {
@@ -234,13 +30,21 @@ export async function getAllTasks() {
   }
 }
 
+type TaskWithLogCount = {
+  id: number;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  timeSpent: number;
+  activityCount:number
+}
 export async function getAllTasksWithLogCount() {
   try {
     const user = await getServerUser();
     if (!user) {
       throw new Error("User not found");
     }
-    const tasks = await db.tasks.findMany({
+    const taskPromise =db.tasks.findMany({
       where: {
         user: {
           id: parseInt(user.user.id),
@@ -257,8 +61,30 @@ export async function getAllTasksWithLogCount() {
           },
         },
       },
+
       orderBy: { id: "desc" },
     });
+    const timeSpentPromise = db.taskLog.groupBy({
+      by:["taskId","userId"],
+      _sum: {
+        duration: true,
+      },
+      where: {
+        userId: parseInt(user.user.id),
+      },
+    });
+    const [taskList, timeSpent] = await Promise.all([taskPromise, timeSpentPromise]);
+    const tasks:TaskWithLogCount[] =[]
+    for (const task of taskList) {
+      const taskTimeSpent = timeSpent.find(
+        (item) => item.taskId === task.id
+      );
+      tasks.push({
+        ...task,
+        timeSpent: taskTimeSpent ? Number(taskTimeSpent._sum.duration) : 0,
+        activityCount: task._count.taskLogs
+      })
+    }
     return { tasks, error: null, status: true };
   } catch (error) {
     console.log(error);

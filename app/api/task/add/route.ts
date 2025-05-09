@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    revalidatePath("/");
+    revalidatePath("/","page");
 
     return NextResponse.json({
       message: "Task created successfully",

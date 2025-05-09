@@ -20,10 +20,11 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import { addTask, editTask } from "@/app/_actions";
 import Image from "next/image";
 import { getAISuggestion } from "@/lib/api/ai";
 import { Check, X } from "lucide-react";
+import { addTask, editTask } from "@/lib/api/task";
+import { useRouter } from "next/navigation";
 
 const formState = z.object({
   title: z.string().min(1, "Title is required"),
@@ -41,6 +42,7 @@ export default function TaskModal() {
   });
   const [showSuggestion, setShowSuggetion] = useState(false);
   const [loading, setLoading] = useState<"submit" | "ai" | null>(null);
+  const router=useRouter()
   const form = useForm<z.infer<typeof formState>>({
     resolver: zodResolver(formState),
     defaultValues: {
@@ -56,7 +58,7 @@ export default function TaskModal() {
   }, [data]);
 
   async function onSubmit(values: z.infer<typeof formState>) {
-    if (loading) {
+    if (loading!== null  || showSuggestion)  {
       return;
     }
     const { title, description } = values;
@@ -68,7 +70,10 @@ export default function TaskModal() {
         res = await addTask(taskData);
       } else {
         const taskData = { title, description };
-        res = await editTask({ id: data.id, updates: taskData });
+        res = await editTask({ id: data.id, ...taskData });
+      }
+      if(res.status){
+        router.refresh();
       }
       form.reset();
       dispatch(setModalOpen(false));
@@ -116,6 +121,9 @@ export default function TaskModal() {
         if (!e) {
           form.reset();
           dispatch(setModalOpen(false));
+          setShowSuggetion(false);
+          setPreviousData({ title: "", description: "" });
+          setLoading(null);
         }
       }}
     >
@@ -189,7 +197,7 @@ export default function TaskModal() {
             </div>}
             <div className="w-full mx-auto h-px bg-gray-200 my-1"></div>
             <div className="flex justify-end gap-2">
-              <Button disabled={showSuggestion || loading!==null}>{
+              <Button>{
               loading==="submit"? <Ring size={20} stroke={1.5} color="white"/> :
               data?.id ? "Save" : "Add"}</Button>
               <Button

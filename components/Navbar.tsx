@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession } from "next-auth/react";
 import ProfileDropDown from "./ProfileDropDown";
-import { LogOut } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setData, setModalOpen } from "@/lib/store/slice/taskModal";
 import { usePathname } from "next/navigation";
@@ -27,7 +27,9 @@ export default function Navbar({profileImage}:{profileImage:string}) {
             <ProfileDropDown>
               <Avatar  className="cursor-pointer" >
                 <AvatarImage src={profileImage}></AvatarImage>
-                <AvatarFallback>DP</AvatarFallback>
+                <AvatarFallback>
+                  <UserRound />
+                </AvatarFallback>
               </Avatar>
             </ProfileDropDown>
           </ul>

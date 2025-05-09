@@ -3,7 +3,17 @@ import { getServerUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma";
 
-export async function POST(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      taskId: string;
+      activityId: string;
+    };
+  }
+) {
   try {
     const user = await getServerUser();
     if (!user) {
@@ -13,10 +23,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { taskId, activityId, duration = 0 } = body;
+    const { duration = 0 } = await req.json();
 
-    if (!taskId || !activityId || isNaN(taskId) || isNaN(activityId)) {
+    const taskId = parseInt(params.taskId);
+    const activityId = parseInt(params.activityId);
+
+    if (isNaN(taskId) || isNaN(activityId)) {
       return NextResponse.json(
         { error: "Invalid taskId or activityId", status: false },
         { status: 400 }
@@ -25,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     const activity = await db.taskLog.upsert({
       where: {
-        taskId: taskId,
+        taskId,
         id: activityId,
         userId: parseInt(user.user.id),
       },
@@ -61,6 +73,7 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
+
     return NextResponse.json(
       { error: "Something went wrong", status: false },
       { status: 500 }

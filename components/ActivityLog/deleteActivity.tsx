@@ -1,8 +1,8 @@
 "use client";
-
-import { deleteActivityLog } from "@/app/_actions";
+import { deleteActivityLog } from "@/lib/api/tasklog";
 import ConfimationBox from "../ConfimationBox";
 import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DeleteActivityButton({
   taskId,
@@ -11,10 +11,12 @@ export default function DeleteActivityButton({
   taskId: number;
   logId: number;
 }) {
+  const router=useRouter();
   return (
     <ConfimationBox
       onYes={async () => {
         await deleteActivityLog(taskId, logId);
+        router.refresh();
       }}
       message="Are you sure you want to delete this activity log?"
     >

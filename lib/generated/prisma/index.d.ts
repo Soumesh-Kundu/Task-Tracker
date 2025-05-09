@@ -1161,22 +1161,22 @@ export namespace Prisma {
 
   export type UsersMinAggregateOutputType = {
     id: number | null
-    name: string | null
     email: string | null
+    password: string | null
     image: string | null
   }
 
   export type UsersMaxAggregateOutputType = {
     id: number | null
-    name: string | null
     email: string | null
+    password: string | null
     image: string | null
   }
 
   export type UsersCountAggregateOutputType = {
     id: number
-    name: number
     email: number
+    password: number
     image: number
     _all: number
   }
@@ -1192,22 +1192,22 @@ export namespace Prisma {
 
   export type UsersMinAggregateInputType = {
     id?: true
-    name?: true
     email?: true
+    password?: true
     image?: true
   }
 
   export type UsersMaxAggregateInputType = {
     id?: true
-    name?: true
     email?: true
+    password?: true
     image?: true
   }
 
   export type UsersCountAggregateInputType = {
     id?: true
-    name?: true
     email?: true
+    password?: true
     image?: true
     _all?: true
   }
@@ -1300,8 +1300,8 @@ export namespace Prisma {
 
   export type UsersGroupByOutputType = {
     id: number
-    name: string
     email: string
+    password: string | null
     image: string | null
     _count: UsersCountAggregateOutputType | null
     _avg: UsersAvgAggregateOutputType | null
@@ -1326,8 +1326,8 @@ export namespace Prisma {
 
   export type UsersSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
     email?: boolean
+    password?: boolean
     image?: boolean
     tasks?: boolean | Users$tasksArgs<ExtArgs>
     taskLogs?: boolean | Users$taskLogsArgs<ExtArgs>
@@ -1336,26 +1336,26 @@ export namespace Prisma {
 
   export type UsersSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
     email?: boolean
+    password?: boolean
     image?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
     email?: boolean
+    password?: boolean
     image?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectScalar = {
     id?: boolean
-    name?: boolean
     email?: boolean
+    password?: boolean
     image?: boolean
   }
 
-  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "image", ExtArgs["result"]["users"]>
+  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "image", ExtArgs["result"]["users"]>
   export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tasks?: boolean | Users$tasksArgs<ExtArgs>
     taskLogs?: boolean | Users$taskLogsArgs<ExtArgs>
@@ -1372,8 +1372,8 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      name: string
       email: string
+      password: string | null
       image: string | null
     }, ExtArgs["result"]["users"]>
     composites: {}
@@ -1801,8 +1801,8 @@ export namespace Prisma {
    */
   interface UsersFieldRefs {
     readonly id: FieldRef<"Users", 'Int'>
-    readonly name: FieldRef<"Users", 'String'>
     readonly email: FieldRef<"Users", 'String'>
+    readonly password: FieldRef<"Users", 'String'>
     readonly image: FieldRef<"Users", 'String'>
   }
     
@@ -4512,8 +4512,8 @@ export namespace Prisma {
 
   export const UsersScalarFieldEnum: {
     id: 'id',
-    name: 'name',
     email: 'email',
+    password: 'password',
     image: 'image'
   };
 
@@ -4663,8 +4663,8 @@ export namespace Prisma {
     OR?: UsersWhereInput[]
     NOT?: UsersWhereInput | UsersWhereInput[]
     id?: IntFilter<"Users"> | number
-    name?: StringFilter<"Users"> | string
     email?: StringFilter<"Users"> | string
+    password?: StringNullableFilter<"Users"> | string | null
     image?: StringNullableFilter<"Users"> | string | null
     tasks?: TasksListRelationFilter
     taskLogs?: TaskLogListRelationFilter
@@ -4672,8 +4672,8 @@ export namespace Prisma {
 
   export type UsersOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
+    password?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     tasks?: TasksOrderByRelationAggregateInput
     taskLogs?: TaskLogOrderByRelationAggregateInput
@@ -4685,7 +4685,7 @@ export namespace Prisma {
     AND?: UsersWhereInput | UsersWhereInput[]
     OR?: UsersWhereInput[]
     NOT?: UsersWhereInput | UsersWhereInput[]
-    name?: StringFilter<"Users"> | string
+    password?: StringNullableFilter<"Users"> | string | null
     image?: StringNullableFilter<"Users"> | string | null
     tasks?: TasksListRelationFilter
     taskLogs?: TaskLogListRelationFilter
@@ -4693,8 +4693,8 @@ export namespace Prisma {
 
   export type UsersOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
+    password?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     _count?: UsersCountOrderByAggregateInput
     _avg?: UsersAvgOrderByAggregateInput
@@ -4708,8 +4708,8 @@ export namespace Prisma {
     OR?: UsersScalarWhereWithAggregatesInput[]
     NOT?: UsersScalarWhereWithAggregatesInput | UsersScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Users"> | number
-    name?: StringWithAggregatesFilter<"Users"> | string
     email?: StringWithAggregatesFilter<"Users"> | string
+    password?: StringNullableWithAggregatesFilter<"Users"> | string | null
     image?: StringNullableWithAggregatesFilter<"Users"> | string | null
   }
 
@@ -4834,8 +4834,8 @@ export namespace Prisma {
   }
 
   export type UsersCreateInput = {
-    name: string
     email: string
+    password?: string | null
     image?: string | null
     tasks?: TasksCreateNestedManyWithoutUserInput
     taskLogs?: TaskLogCreateNestedManyWithoutUserInput
@@ -4843,16 +4843,16 @@ export namespace Prisma {
 
   export type UsersUncheckedCreateInput = {
     id?: number
-    name: string
     email: string
+    password?: string | null
     image?: string | null
     tasks?: TasksUncheckedCreateNestedManyWithoutUserInput
     taskLogs?: TaskLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersUpdateInput = {
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TasksUpdateManyWithoutUserNestedInput
     taskLogs?: TaskLogUpdateManyWithoutUserNestedInput
@@ -4860,8 +4860,8 @@ export namespace Prisma {
 
   export type UsersUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TasksUncheckedUpdateManyWithoutUserNestedInput
     taskLogs?: TaskLogUncheckedUpdateManyWithoutUserNestedInput
@@ -4869,21 +4869,21 @@ export namespace Prisma {
 
   export type UsersCreateManyInput = {
     id?: number
-    name: string
     email: string
+    password?: string | null
     image?: string | null
   }
 
   export type UsersUpdateManyMutationInput = {
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UsersUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -5062,8 +5062,8 @@ export namespace Prisma {
 
   export type UsersCountOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
+    password?: SortOrder
     image?: SortOrder
   }
 
@@ -5073,15 +5073,15 @@ export namespace Prisma {
 
   export type UsersMaxOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
+    password?: SortOrder
     image?: SortOrder
   }
 
   export type UsersMinOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
+    password?: SortOrder
     image?: SortOrder
   }
 
@@ -5775,16 +5775,16 @@ export namespace Prisma {
   }
 
   export type UsersCreateWithoutTasksInput = {
-    name: string
     email: string
+    password?: string | null
     image?: string | null
     taskLogs?: TaskLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutTasksInput = {
     id?: number
-    name: string
     email: string
+    password?: string | null
     image?: string | null
     taskLogs?: TaskLogUncheckedCreateNestedManyWithoutUserInput
   }
@@ -5829,16 +5829,16 @@ export namespace Prisma {
   }
 
   export type UsersUpdateWithoutTasksInput = {
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     taskLogs?: TaskLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutTasksInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     taskLogs?: TaskLogUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -5880,16 +5880,16 @@ export namespace Prisma {
   }
 
   export type UsersCreateWithoutTaskLogsInput = {
-    name: string
     email: string
+    password?: string | null
     image?: string | null
     tasks?: TasksCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutTaskLogsInput = {
     id?: number
-    name: string
     email: string
+    password?: string | null
     image?: string | null
     tasks?: TasksUncheckedCreateNestedManyWithoutUserInput
   }
@@ -5937,16 +5937,16 @@ export namespace Prisma {
   }
 
   export type UsersUpdateWithoutTaskLogsInput = {
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TasksUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutTaskLogsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TasksUncheckedUpdateManyWithoutUserNestedInput
   }

@@ -2,6 +2,7 @@ import { getServerSession, NextAuthOptions } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "./db";
+import { compare } from "bcrypt";
 
 declare module "next-auth" {
   interface Session {
@@ -24,6 +25,33 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60,
   },
   providers: [
+    CredentialProvider({
+      name: "Credentials",
+      credentials: {
+        email: { type: "email" },
+        password: { type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+        const user = await db.users.findFirst({
+          where: { email: credentials.email },
+        });
+        if (!user || !user?.password) {
+          return null;
+        }
+        const verfied = await compare(credentials.password, user.password);
+        if (!verfied) {
+          return null;
+        }
+        return {
+          id: `${user.id}`,
+          email: user.email,
+          image: user?.image,
+        };
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -40,7 +68,6 @@ export const authOptions: NextAuthOptions = {
           user=await db.users.create({
             data:{
               email:profile.email,
-              name:profile.name,
               image:profile.picture,
             },
             select:{id:true}
@@ -51,7 +78,6 @@ export const authOptions: NextAuthOptions = {
         }
         const result={
           id: `${user?.id}`,
-          name: profile.name,
           email: profile.email,
           image: profile.picture,
         }

@@ -8,16 +8,16 @@ import {
   SelectValue,
 } from "../ui/select";
 import { TaskStatus } from "@/lib/generated/prisma";
-import { Pause, PencilLine, Play, StopCircle, Trash2 } from "lucide-react";
+import { Circle, CircleStop, Pause, PencilLine, Play,  Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { setData, setModalOpen } from "@/lib/store/slice/taskModal";
-import {
-  deleteTask,
-  updateTaskStatus,
-  upsertActivityLog,
-} from "@/app/_actions";
 import ConfimationBox from "../ConfimationBox";
+import { deleteTask, updateTaskStatus } from "@/lib/api/task";
+import { upsertActivityLog } from "@/lib/api/tasklog";
+import { useRouter } from "next/navigation";
+import {Ring} from 'ldrs/react'
+import "ldrs/react/Ring.css"
 type props = {
   task: {
     id: number;
@@ -31,9 +31,11 @@ export default function TaskCard({ task }: props) {
   const [currentStatus, setCurrentStatus] = useState(task.status);
   const [currentActivityLogId, setCurrentActivityLogId] = useState<number>(0);
   const previousStatus = useRef<TaskStatus>(task.status);
+  const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const router=useRouter();
   const currentTimerInstance = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useDispatch();
 
@@ -63,6 +65,7 @@ export default function TaskCard({ task }: props) {
         setCurrentStatus("IN_PROGRESS");
       }
       currentTimerInstance.current = setInterval(() => {
+        if(isPaused || isLoading) return
         setTimer((prev) => prev + 1);
       }, 1000);
       const res = await upsertActivityLog(task.id, currentActivityLogId);
@@ -74,6 +77,7 @@ export default function TaskCard({ task }: props) {
     if (isPaused) {
       setIsPaused(false);
       currentTimerInstance.current = setInterval(() => {
+        if(isPaused || isLoading) return
         setTimer((prev) => prev + 1);
       }, 1000);
     } else {
@@ -93,10 +97,12 @@ export default function TaskCard({ task }: props) {
       clearInterval(currentTimerInstance.current);
       currentTimerInstance.current = null;
     }
+    setIsLoading(true);
     const res = await upsertActivityLog(task.id, currentActivityLogId, timer);
     if (res.status) {
       setCurrentActivityLogId(0);
     }
+    setIsLoading(false);
     setIsRunning(false);
     setIsPaused(false);
     setTimer(0);
@@ -110,11 +116,7 @@ export default function TaskCard({ task }: props) {
 
   async function handleUpdateStatus() {
     try {
-      const res = await updateTaskStatus({
-        id: task.id,
-        status: currentStatus,
-      });
-      console.log(currentStatus, res);
+      const res = await updateTaskStatus(task.id, currentStatus);
       if (res.status) {
         previousStatus.current = currentStatus;
       }
@@ -126,6 +128,9 @@ export default function TaskCard({ task }: props) {
   async function handleDelete() {
     try {
       const res = await deleteTask(task.id);
+      if(res.status){
+        router.refresh();
+      }
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -206,8 +211,11 @@ export default function TaskCard({ task }: props) {
                   onClick={stopTimer}
                   className="rounded-lg bg-red-500 hover:bg-red-600 text-white"
                 >
-                  {" "}
-                  <StopCircle />{" "}
+                  {
+                    isLoading?
+                    <Ring size={20} color="white" stroke={1.5}/>:
+                    <CircleStop   />
+                  }
                 </Button>
               )}
             </>

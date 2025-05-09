@@ -1,7 +1,7 @@
-import { deleteActivityLog, getTaskDetailsById } from "@/app/_actions";
+import { getTaskDetailsById } from "@/app/_actions";
 import DeleteActivityButton from "@/components/ActivityLog/deleteActivity";
-import ConfimationBox from "@/components/ConfimationBox";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { formatTimeString } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default async function page({
@@ -25,21 +25,7 @@ export default async function page({
       IN_PROGRESS: "In Progress",
       COMPLETED: "Completed",
     };
-    function formatTimeString(time: number) {
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      let currTime = `${seconds.toString().padStart(2, "0")} sec`;
-      if (minutes > 0) {
-        currTime = `${minutes.toString().padStart(2, "0")} min  ` + currTime;
-      }
-      if (time >= 3600) {
-        const hours = Math.floor(time / 3600);
-        currTime = `${hours.toString().padStart(2, "0")}:${currTime}`;
-        currTime =
-          `${hours.toString().padStart(2, "0")}:${currTime} hr  ` + currTime;
-      }
-      return currTime;
-    }
+  
 
     return (
       <div className="flex flex-col gap-3 w-full h-full ">

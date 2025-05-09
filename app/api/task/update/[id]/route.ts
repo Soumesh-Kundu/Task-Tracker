@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function PATCH(
   req: NextRequest,
@@ -23,7 +24,7 @@ export async function PATCH(
         { status: 400 }
       );
     }
-
+    
     const body = await req.json();
     const { title, description } = body;
 
@@ -33,12 +34,13 @@ export async function PATCH(
         { status: 400 }
       );
     }
-
+    
     await db.tasks.update({
       where: { id },
       data: { title, description },
     });
-
+    
+    revalidatePath("/", "page");
     return NextResponse.json({
       message: "Task updated successfully",
       status: true,
