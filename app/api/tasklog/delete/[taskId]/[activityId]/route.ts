@@ -8,10 +8,10 @@ export async function DELETE(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       taskId: string;
       activityId: string;
-    };
+    }>;
   }
 ) {
   try {
@@ -22,8 +22,8 @@ export async function DELETE(
 
     const activity = await db.taskLog.delete({
       where: {
-        taskId: parseInt(params.taskId),
-        id: parseInt(params.activityId),
+        taskId: parseInt((await params).taskId),
+        id: parseInt((await params).activityId),
         userId: parseInt(user.user.id),
       },
     });

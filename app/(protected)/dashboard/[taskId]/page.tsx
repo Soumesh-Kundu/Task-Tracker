@@ -7,7 +7,7 @@ import Link from "next/link";
 export default async function page({
   params,
 }: {
-  params: { taskId: Awaited<string> };
+  params: Promise<{ taskId:string }>;
 }) {
   try {
     const taskID = parseInt((await params).taskId);

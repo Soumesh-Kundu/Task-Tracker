@@ -5,7 +5,7 @@ import { Prisma, TaskStatus } from "@/lib/generated/prisma";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getServerUser();
@@ -20,7 +20,7 @@ export async function PATCH(
 
     const updated = await db.tasks.update({
       where: {
-        id: parseInt(params.id),
+        id: parseInt((await params).id),
         userId: parseInt(user.user.id),
       },
       data: {

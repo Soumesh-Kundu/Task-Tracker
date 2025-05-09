@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getServerUser();
@@ -15,7 +15,7 @@ export async function GET(
       );
     }
 
-    const taskId = parseInt(params.id);
+    const taskId = parseInt((await params).id);
     if (isNaN(taskId)) {
       return NextResponse.json(
         { task: null, error: "Invalid task ID", status: false },

@@ -8,10 +8,10 @@ export async function PATCH(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       taskId: string;
       activityId: string;
-    };
+    }>;
   }
 ) {
   try {
@@ -25,8 +25,8 @@ export async function PATCH(
 
     const { duration = 0 } = await req.json();
 
-    const taskId = parseInt(params.taskId);
-    const activityId = parseInt(params.activityId);
+    const taskId = parseInt((await params).taskId);
+    const activityId = parseInt((await params).activityId);
 
     if (isNaN(taskId) || isNaN(activityId)) {
       return NextResponse.json(

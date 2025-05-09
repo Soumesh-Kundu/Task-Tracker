@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getServerUser();
@@ -17,7 +17,7 @@ export async function PATCH(
       );
     }
 
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid task ID", status: false },
