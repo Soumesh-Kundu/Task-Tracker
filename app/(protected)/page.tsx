@@ -10,7 +10,7 @@ export default async function Page(){
         </div>
     }
     return <>
-        <main className="grid  w-full max-w-6xl mx-auto p-2 mt-3 grid-cols-3  gap-5 ">
+        <main className="grid grid-cols-1 sm:grid-cols-2 md:max-w-5xl lg:max-w-6xl mx-auto p-2 mt-3 lg:grid-cols-3 2xl:max-w-7xl  gap-5 ">
             {
                 tasks.map(task=>{
                     return <TaskCard key={task.id} task={task}/>

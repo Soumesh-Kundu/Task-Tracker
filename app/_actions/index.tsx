@@ -132,24 +132,26 @@ export async function deleteTask(id: number) {
     return { error: "Something went wrong", status: false };
   }
 }
-export async function addActivityLog({
-  id,
-  duration,
-}: {
-  id: number;
-  duration: number;
-}) {
+export async function upsertActivityLog(taskId: number, activityId: number,duration: number=0) {
   try {
     const user = await getServerUser();
     if (!user) {
       throw new Error("User not found");
     }
-    await db.taskLog.create({
-      data: {
+    const activity=await db.taskLog.upsert({
+      where:{
+        taskId,
+        id:activityId,
+        userId:parseInt(user.user.id)
+      },
+      update:{
+        duration
+      },
+      create: {
         duration,
-        task: {
+        task:{
           connect: {
-            id,
+            id: taskId,
           },
         },
         user: {
@@ -158,8 +160,11 @@ export async function addActivityLog({
           },
         },
       },
-    });
-    return { message: "Activity log created successfully", status: true };
+      select:{
+        id:true
+      }
+    })
+    return { activityId:activity.id, status: true };
   } catch (error) {
     console.log(error);
     if (
@@ -171,6 +176,7 @@ export async function addActivityLog({
     return { error: "Something went wrong", status: false };
   }
 }
+
 
 export async function getAllTasks() {
   try {

@@ -12,7 +12,11 @@ import { Pause, PencilLine, Play, StopCircle, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { setData, setModalOpen } from "@/lib/store/slice/taskModal";
-import { deleteTask, updateTaskStatus } from "@/app/_actions";
+import {
+  deleteTask,
+  updateTaskStatus,
+  upsertActivityLog,
+} from "@/app/_actions";
 import ConfimationBox from "../ConfimationBox";
 type props = {
   task: {
@@ -25,6 +29,7 @@ type props = {
 
 export default function TaskCard({ task }: props) {
   const [currentStatus, setCurrentStatus] = useState(task.status);
+  const [currentActivityLogId, setCurrentActivityLogId] = useState<number>(0);
   const previousStatus = useRef<TaskStatus>(task.status);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -50,7 +55,7 @@ export default function TaskCard({ task }: props) {
     return currTime;
   }, [timer]);
 
-  function toggleTimer() {
+  async function toggleTimer() {
     if (!isRunning) {
       setIsRunning(true);
       setIsPaused(false);
@@ -60,6 +65,10 @@ export default function TaskCard({ task }: props) {
       currentTimerInstance.current = setInterval(() => {
         setTimer((prev) => prev + 1);
       }, 1000);
+      const res = await upsertActivityLog(task.id, currentActivityLogId);
+      if (res.status) {
+        setCurrentActivityLogId(res.activityId!);
+      }
       return;
     }
     if (isPaused) {
@@ -73,12 +82,20 @@ export default function TaskCard({ task }: props) {
         clearInterval(currentTimerInstance.current);
         currentTimerInstance.current = null;
       }
+      const res = await upsertActivityLog(task.id, currentActivityLogId, timer);
+      if (res.status) {
+        setCurrentActivityLogId(res.activityId!);
+      }
     }
   }
-  function stopTimer() {
+  async function stopTimer() {
     if (currentTimerInstance.current) {
       clearInterval(currentTimerInstance.current);
       currentTimerInstance.current = null;
+    }
+    const res = await upsertActivityLog(task.id, currentActivityLogId, timer);
+    if (res.status) {
+      setCurrentActivityLogId(0);
     }
     setIsRunning(false);
     setIsPaused(false);
@@ -106,11 +123,10 @@ export default function TaskCard({ task }: props) {
       setCurrentStatus(previousStatus.current);
     }
   }
-  async function handleDelete(){
-    try{
-      const res = await deleteTask(task.id)
-    }
-    catch(error){
+  async function handleDelete() {
+    try {
+      const res = await deleteTask(task.id);
+    } catch (error) {
       console.error("Error deleting task:", error);
     }
   }
@@ -201,7 +217,7 @@ export default function TaskCard({ task }: props) {
           <button
             type="button"
             onClick={handleEdit}
-            className="cursor-pointer p-2 rounded-full flex items-center justify-center border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition-all duration-200 ease-in-out "
+            className="cursor-pointer p-2 rounded-full flex items-center justify-center border border-orange-500  sm:bg-white sm:text-orange-500 hover:bg-orange-500 hover:text-white transition-all duration-200 ease-in-out "
           >
             <PencilLine size={20} />{" "}
           </button>

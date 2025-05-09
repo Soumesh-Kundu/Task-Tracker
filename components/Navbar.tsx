@@ -7,21 +7,24 @@ import ProfileDropDown from "./ProfileDropDown";
 import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setData, setModalOpen } from "@/lib/store/slice/taskModal";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const user = useSession();
+  const pathname=usePathname()
   const dispatch = useDispatch();
   const handleModalOpen = () => {
     dispatch(setData(null));
     dispatch(setModalOpen(true));
   };
+  console.log(user)
   return (
     <header>
       <nav className="flex bg-white/70 backdrop-blur-md w-full sticky top-0 z-50">
         <div className="container mx-auto flex justify-between items-center py-4 px-1">
           <div className="text-xl font-bold">Task Tracker</div>
           <ul className="flex space-x-4">
-            <Button onClick={handleModalOpen}>Add Task</Button>
+            {pathname==="/"  && <Button onClick={handleModalOpen}>Add Task</Button>}
             <ProfileDropDown>
               <Avatar className="cursor-pointer" >
                 <AvatarImage src={user.data?.user.image}></AvatarImage>
