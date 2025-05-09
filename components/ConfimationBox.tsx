@@ -11,10 +11,12 @@ import { Button } from "./ui/button";
 
 export default function ConfimationBox({
   children,
-  onYes,
+  message,
+  onYes=() => Promise.resolve(),
 }: {
   children: React.ReactNode;
-  onYes: () => Promise<void>;
+  message: string;
+  onYes?: () => Promise<void>;
 }) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   async function handleOnYes() {
@@ -29,7 +31,7 @@ export default function ConfimationBox({
         <div className="flex flex-col gap-6">
           <h1 className="text-lg font-medium text-center">Are you sure?</h1>
           <p className="text-sm text-slate-500 text-center">
-            This action cannot be undone and all the activity log will be lost.
+            {message}
           </p>
           <div className="flex justify-center gap-2">
             <Button

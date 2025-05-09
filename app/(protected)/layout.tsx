@@ -3,17 +3,17 @@ import Wrapper from "@/components/Wrapper";
 import { getServerUser } from "@/lib/auth";
 import { permanentRedirect } from "next/navigation";
 
-export default function ProtectedLayout({
+export default async function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = getServerUser();
+  const session = await getServerUser();
   if (!session) {
     permanentRedirect("/login");
   }
   return <Wrapper>
-    <Navbar/>
+    <Navbar profileImage={session.user.image}/>
     {children}
     
     </Wrapper>;

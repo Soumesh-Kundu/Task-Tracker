@@ -8,19 +8,24 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator
 } from "./ui/dropdown-menu";
-import { CalendarCheck, ChartNoAxesCombined, LogOut } from "lucide-react";
+import { CalendarCheck, ChartNoAxesCombined, ChevronDown, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function ProfileDropDown({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
   const router=useRouter()
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu onOpenChange={(open) => setIsOpen(open)}>
+      <DropdownMenuTrigger className="cursor-pointer relative">
         {children}
+        <span className="absolute bottom-1 right-1 translate-y-1/2 translate-x-1/2  z-[60]  rounded-full p-px bg-slate-100">
+          <ChevronDown className={` text-gray-800 duration-200 ${isOpen?"rotate-180":"rotate-0"}`}  size={14} />
+        </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48" side="bottom" align="end" sideOffset={15}>
         <DropdownMenuGroup>

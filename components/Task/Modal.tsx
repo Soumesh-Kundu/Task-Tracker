@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogTitle, DialogContent } from "../ui/dialog";
 import { RootState } from "@/lib/store";
 import { setModalOpen } from "@/lib/store/slice/taskModal";
-import { z } from "zod";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Ring } from "ldrs/react";
+import "ldrs/react/Ring.css";
 import {
   Form,
   FormControl,
@@ -16,16 +18,12 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Button } from "../ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { addTask, editTask } from "@/app/_actions";
+import Image from "next/image";
+import { getAISuggestion } from "@/lib/api/ai";
+import { Check, X } from "lucide-react";
 
 const formState = z.object({
   title: z.string().min(1, "Title is required"),
@@ -37,7 +35,12 @@ export default function TaskModal() {
     (state: RootState) => state.taskModal
   );
   const dispatch = useDispatch();
-
+  const [previousData, setPreviousData] = useState({
+    title: "",
+    description: "",
+  });
+  const [showSuggestion, setShowSuggetion] = useState(false);
+  const [loading, setLoading] = useState<"submit" | "ai" | null>(null);
   const form = useForm<z.infer<typeof formState>>({
     resolver: zodResolver(formState),
     defaultValues: {
@@ -53,8 +56,12 @@ export default function TaskModal() {
   }, [data]);
 
   async function onSubmit(values: z.infer<typeof formState>) {
+    if (loading) {
+      return;
+    }
     const { title, description } = values;
     try {
+      setLoading("submit");
       const taskData = { title, description };
       let res;
       if (!data?.id) {
@@ -68,6 +75,39 @@ export default function TaskModal() {
     } catch (error) {
       console.log(error);
     }
+    setLoading(null);
+  }
+  async function getSuggetion() {
+    const { title } = form.getValues();
+    if (!title || loading) {
+      return;
+    }
+    setLoading("ai");
+    try {
+      setPreviousData({
+        title: form.getValues("title"),
+        description: form.getValues("description"),
+      });
+      const res = await getAISuggestion(title);
+      if (res.status) {
+        form.setValue("title", res.title);
+        form.setValue("description", res.description);
+        setShowSuggetion(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(null);
+  }
+  function resetPreviousContent() {
+    form.setValue("title", previousData.title);
+    form.setValue("description", previousData.description);
+    setShowSuggetion(false);
+  }
+  function handleAcceptSuggetion() {
+    const { title, description } = form.getValues();
+    setPreviousData({ title, description });
+    setShowSuggetion(false);
   }
   return (
     <Dialog
@@ -93,7 +133,32 @@ export default function TaskModal() {
                 <FormItem className="mb-4">
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Title" {...field} />
+                    <div className="flex gap-2">
+                      <Input
+                        disabled={showSuggestion}
+                        placeholder="Title"
+                        {...field}
+                        className="flex-grow"
+                      />
+                      <Button
+                        disabled={loading !== null}
+                        onClick={getSuggetion}
+                        variant="outline"
+                        className="w-9 h-9 p-1"
+                      >
+                        {loading === "ai" ? (
+                          <Ring size={20} stroke={1.5} />
+                        ) : (
+                          <Image
+                            src="/gemini.png"
+                            width={30}
+                            height={30}
+                            alt="gemini_png"
+                            className="bg-transparent"
+                          />
+                        )}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,15 +171,27 @@ export default function TaskModal() {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Description" {...field} />
+                    <Textarea   disabled={showSuggestion} placeholder="Description" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="w-full mx-auto h-px bg-gray-200 my-2"></div>
+            {showSuggestion && <div className="flex justify-end gap-3">
+              <button onClick={handleAcceptSuggetion} type="button" className="flex items-center gap-1 rounded-md border text-black text-sm p-1 cursor-pointer hover:bg-gray-50">
+                <Check size={15}/>
+                Accept
+              </button>
+              <button onClick={resetPreviousContent} type="button" className="flex items-center gap-1 rounded-md border text-black text-sm px-1.5 cursor-pointer hover:bg-gray-50">
+                <X size={15}/>
+                Decline
+              </button>
+            </div>}
+            <div className="w-full mx-auto h-px bg-gray-200 my-1"></div>
             <div className="flex justify-end gap-2">
-              <Button>{data?.id ? "Save" : "Add"}</Button>
+              <Button disabled={showSuggestion || loading!==null}>{
+              loading==="submit"? <Ring size={20} stroke={1.5} color="white"/> :
+              data?.id ? "Save" : "Add"}</Button>
               <Button
                 type="button"
                 variant="outline"

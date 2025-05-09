@@ -214,17 +214,17 @@ export default function TaskCard({ task }: props) {
           )}
         </div>
         <div className="flex gap-2 justify-self-end">
-          <button
+          {currentStatus!=="COMPLETED"&& <button
             type="button"
             onClick={handleEdit}
-            className="cursor-pointer p-2 rounded-full flex items-center justify-center border border-orange-500  sm:bg-white sm:text-orange-500 hover:bg-orange-500 hover:text-white transition-all duration-200 ease-in-out "
+            className="cursor-pointer p-2 rounded-full flex items-center justify-center border border-orange-500 bg-orange-500 text-white sm:bg-white sm:text-orange-500 hover:bg-orange-500 hover:text-white transition-all duration-200 ease-in-out "
           >
             <PencilLine size={20} />{" "}
-          </button>
-          <ConfimationBox onYes={handleDelete}>
+          </button>}
+          <ConfimationBox onYes={handleDelete} message="This action cannot be undone and all the activity log will be lost.">
             <button
               type="button"
-              className="cursor-pointer p-2 rounded-full flex items-center justify-center border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200 ease-in-out "
+              className="cursor-pointer p-2 rounded-full flex items-center justify-center border border-red-500 bg-red-500 sm:bg-white text-white sm:text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200 ease-in-out "
             >
               <Trash2 size={20} />{" "}
             </button>
