@@ -2,7 +2,7 @@ import { getServerSession, NextAuthOptions } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "./db";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 
 declare module "next-auth" {
   interface Session {
