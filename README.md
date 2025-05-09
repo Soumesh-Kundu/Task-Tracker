@@ -1,6 +1,6 @@
 ## Task Tracker
 
-**setup**
+#### Setup
 
 install packages
 
@@ -18,7 +18,14 @@ npm run dev
 pnpm run dev
 ```
 
-### Teck Stack
+**Required Environment Variables**
+- `DATABASE_URL` - PostgreSQL connection 
+- `NEXT_AUTH_SECRET` - NextAuth secret
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `GOOGLE_GENERATIVE_AI_API_KEY` - Google Generative AI API key
+
+#### Teck Stack
 
 - Frontend:
   - React (Next.js)
