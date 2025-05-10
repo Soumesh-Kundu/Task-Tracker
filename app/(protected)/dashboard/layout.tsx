@@ -1,7 +1,7 @@
 import { getInsights } from "@/app/_actions";
 import ConditionalWrapper from "@/components/ConditionalWrapper";
 import { CircularProgressBar } from "@/components/ui/CircularProgressBar";
-
+export const dynamic = "force-dynamic";
 export default async function DashboardLayout({
   children,
 }: {
