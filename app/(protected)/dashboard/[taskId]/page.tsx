@@ -1,5 +1,6 @@
 import { getTaskDetailsById } from "@/app/_actions";
 import DeleteActivityButton from "@/components/ActivityLog/deleteActivity";
+import LocalTimeString from "@/components/LocalTimeString";
 import { formatTimeString } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -59,7 +60,7 @@ export default async function page({
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col gap-2">
                     <p className="font-semibold">
-                      {new Date(log.createdAt).toLocaleString()}
+                      <LocalTimeString createdAt={log.createdAt} />
                     </p>
                     <p className="text-gray-700  font-medium">
                       Duration: {formatTimeString(Number(log.duration))}
